@@ -1,0 +1,4 @@
+*.o
+*.firm
+*.elf
+.vscode/

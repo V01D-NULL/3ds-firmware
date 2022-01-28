@@ -1,0 +1,3 @@
+[submodule "submodules/firmtool"]
+	path = submodules/firmtool
+	url = https://github.com/TuxSH/firmtool.git
