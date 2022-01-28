@@ -2,12 +2,15 @@
 
 A little experiment where I build a toy kernel for the new nintendo 3ds (n3ds).
 
+<img src="https://media.discordapp.net/attachments/834872300561629244/936378762331828224/20220127_152753.jpg?width=881&height=661"></img>
+
+### Building:
 I don't really expect anyone to build this so you'll have to change some things I hardcoded if you do want to build and run this:
-- Before building make sure you the path /usr/lib/gcc/arm-none-eabi/>version</. (By default, the version is 9.2.1, change this as needed)
+- Before building, make sure you have the follwing path: /usr/lib/gcc/arm-none-eabi/>version</. (By default, the version is 9.2.1, change this as needed in `flags.mk`)
 
 - The rootlevel makefile (`Makefile`) will attempt to copy boot.firm to `/media/tim/3437-3631/luma/payloads/`, change this as needed.
 
-Building:
+Building boot.firm:
 ```
 git clone <this_repo> --recursive
 make setup	# install/build dependencies
