@@ -80,6 +80,7 @@ int vsnprintf(char *str, int size, const char *fmt, va_list ap)
 			case 'c':
 				str[i] = va_arg(ap, int);
 				i++;
+				buff_sz++;
 				break;
 
 			case 's':
@@ -89,6 +90,7 @@ int vsnprintf(char *str, int size, const char *fmt, va_list ap)
 				for (int j = 0; j < len; j++)
 					*str++ = arg[j];
 
+				buff_sz += len;
 				i++;
 				break;
 			}
@@ -98,7 +100,10 @@ int vsnprintf(char *str, int size, const char *fmt, va_list ap)
 			{
 				int arg = va_arg(ap, int);
 				if (arg == 0)
+				{
 					*str++ = '0';
+					buff_sz++;
+				}
 				else
 				{
 					char res[20];
@@ -107,6 +112,8 @@ int vsnprintf(char *str, int size, const char *fmt, va_list ap)
 					int len = strlen(res);
 					for (int j = 0; j < len; j++)
 						*str++ = res[j];
+
+					buff_sz += len;
 				}
 				i++;
 				break;
@@ -116,7 +123,10 @@ int vsnprintf(char *str, int size, const char *fmt, va_list ap)
 			{
 				int arg = va_arg(ap, int);
 				if (arg == 0)
+				{
 					*str++ = '0';
+					buff_sz++;
+				}
 				else
 				{
 					char res[20];
@@ -125,6 +135,8 @@ int vsnprintf(char *str, int size, const char *fmt, va_list ap)
 					int len = strlen(res);
 					for (int j = 0; j < len; j++)
 						*str++ = res[j];
+
+					buff_sz += len;
 				}
 				i++;
 				break;
@@ -135,7 +147,10 @@ int vsnprintf(char *str, int size, const char *fmt, va_list ap)
 				int arg = va_arg(ap, int);
 				char res[20];
 				if (arg == 0)
+				{
 					*str++ = '0';
+					buff_sz++;
+				}
 				else
 				{
 					itoa(arg, res, 16, true);
@@ -143,6 +158,8 @@ int vsnprintf(char *str, int size, const char *fmt, va_list ap)
 					int len = strlen(res);
 					for (int j = 0; j < len; j++)
 						*str++ = res[j];
+
+					buff_sz += len;
 				}
 				i++;
 				break;
@@ -156,10 +173,11 @@ int vsnprintf(char *str, int size, const char *fmt, va_list ap)
 			if (fmt[i] == '\0')
 				goto end;
 			*str++ = fmt[i];
+			buff_sz++;
 			break;
 		}
 	}
 end:
 	*str++ = '\0';
-	return strlen(str);
+	return buff_sz;
 }
