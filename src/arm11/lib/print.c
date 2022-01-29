@@ -6,6 +6,7 @@
 static int x = 1;
 static int y = 1;
 static char buff[512];
+
 void print(const char *format, ...)
 {
 	va_list ap;
@@ -17,4 +18,7 @@ void print(const char *format, ...)
 	{
 		putc(true, x, y, 0, buff[i]);
 	}
+
+	x = 0;
+	y += 9;
 }
