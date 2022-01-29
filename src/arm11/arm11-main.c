@@ -1,11 +1,12 @@
+#include <core/mm/slab.h>
 #include <lib/print.h>
-#include <core/fb.h>
 #include <types.h>
 
 void _start(void)
 {
-	print("Hello, world");
-
+	slab_init();
+	print("Nothining left to do, halting...");
+	
 	for (;;)
 		;
 }
