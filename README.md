@@ -8,7 +8,7 @@ A little experiment where I build a toy kernel for the new nintendo 3ds (n3ds).
 I don't really expect anyone to build this so you'll have to change some things I hardcoded if you do want to build and run this:
 - Before building, make sure you have the follwing path: /usr/lib/gcc/arm-none-eabi/>version</. (By default, the version is 9.2.1, change this as needed in `flags.mk`)
 
-- The rootlevel makefile (`Makefile`) will attempt to copy boot.firm to `/media/tim/3437-3631/luma/payloads/`, change this as needed.
+- The root level makefile (`Makefile`) will attempt to copy boot.firm to `/media/tim/3437-3631/luma/payloads/`, change this as needed.
 
 Building boot.firm:
 ```
@@ -18,6 +18,20 @@ make		# Compile the code and build the boot.firm image
 # In order to recompile you have to 'make clean && make'
 # I might switch to meson + ninja in the future to make this less of a problem..
 ```
+
+### Features
+- basic printing
+- slab allocator (will be improved as I a get a feel for memory management on this device)
+
+### Planned features
+- double buffering (bank switching)
+- exception handler
+- mmu
+- scrolling text (maybe idk)
+- read files from sd card
+- i2c
+- gpu driver
+- DOOM!
 
 ### Resources
 https://developer.arm.com/documentation/ddi0201/d

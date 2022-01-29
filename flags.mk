@@ -9,6 +9,6 @@ BUILDDIR =
 INCLUDES =
 
 # Kernel & cpu specific compiler flags
-KERN_CFLAGS  = $(INCLUDES) -ffreestanding -g -O2 -c 
+KERN_CFLAGS  = $(INCLUDES) -ffreestanding -g -O2 -c -D VERBOSE
 ARM9_CFLAGS  = $(KERN_CFLAGS) --target=armv5-none-eabi -mcpu=arm946e-s
 ARM11_CFLAGS = $(KERN_CFLAGS) --target=armv6k-none-eabi -mtune=mpcore -mfloat-abi=hard -mtp=soft
