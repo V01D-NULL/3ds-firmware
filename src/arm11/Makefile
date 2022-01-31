@@ -3,8 +3,12 @@
 BUILDDIR += ../../build
 INCLUDES += -I./ -I../
 
-SOURCES = $(shell find ./ -name '*.c' -type f)
-OBJECTS = $(SOURCES:.c=.c.o)
+CSOURCES = $(shell find ./ -name '*.c' -type f)
+ASSOURCES = $(shell find ./ -name '*.S' -type f)
+
+COBJECTS = $(CSOURCES:.c=.c.o)
+ASOBJECTS = $(ASSOURCES:.S=.S.o)
+OBJECTS = $(ASOBJECTS) $(COBJECTS)
 TARGET  = arm11.elf
 
 all: $(TARGET)
@@ -17,3 +21,7 @@ $(TARGET): $(OBJECTS)
 %.c.o: %.c
 	@printf "[ARM11] CC $<\n";
 	@$(CC) $(ARM11_CFLAGS) $< -o $@
+
+%.S.o: %.S
+	@printf "[ARM11] AS $<\n";
+	@$(AS) $(ARM11_ASFLAGS) $< -o $@
