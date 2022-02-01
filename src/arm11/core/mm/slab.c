@@ -29,7 +29,7 @@ void slab_init(void)
 			slabs[i].objects[j] = (u32*)fcram;
 		}
 	}
-	print("slab: ok", fcram - NORMAL_FCRAM);
+	print("slab: ok");
 }
 
 u32 *slab_alloc(int sz)
