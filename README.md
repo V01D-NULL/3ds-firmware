@@ -19,13 +19,13 @@ make		# Compile the code and build the boot.firm image
 # I might switch to meson + ninja in the future to make this less of a problem..
 ```
 
-### Features
+### Implemented features
 - basic printing
 - slab allocator (will be improved as I a get a feel for memory management on this device)
+- exception handler
 
 ### Planned features
 - double buffering (bank switching)
-- exception handler
 - mmu
 - scrolling text (maybe idk)
 - read files from sd card
