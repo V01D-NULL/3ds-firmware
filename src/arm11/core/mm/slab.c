@@ -81,9 +81,6 @@ void slab_free(u32 *ptr, int sz)
 // Returns -1 on error.
 static i32 find_allocated(int which)
 {
-	if (which < 0 || which > SLABCOUNT)
-		return -2;
-
 	int objects_per_slab = LARGEST_SLAB / pow(2, which + 1);
 	for (int i = 0; i < objects_per_slab; i++)
 	{
@@ -98,9 +95,6 @@ static i32 find_allocated(int which)
 
 static i32 find_free(int which)
 {
-	if (which < 0 || which > SLABCOUNT)
-		return -2;
-
 	int objects_per_slab = LARGEST_SLAB / pow(2, which + 1);
 	for (int i = 0; i < objects_per_slab; i++)
 	{
