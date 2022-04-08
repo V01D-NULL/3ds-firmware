@@ -8,9 +8,6 @@ void main(void)
 	ivt_init();
 	slab_init();
 
-	print("Generating #UD");
-	asm volatile("udf #2");
-
 	for (;;)
 		;
 }
