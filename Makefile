@@ -2,7 +2,7 @@
 
 SD_MOUNTPOINT = /media/tim/3437-36312/luma/payloads/
 
-# boot.firm is what boot9strap loads after doing it's thing, the name must not be changed
+# boot.firm is what boot9strap loads after doing it's thing, the name must not be changed (unless it's chainloaded by luma)
 all: boot.firm
 	@printf "Build complete :^)\n";
 
