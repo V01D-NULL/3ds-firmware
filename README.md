@@ -23,18 +23,19 @@ make		# Compile the code and build the boot.firm image
 - basic printing
 - slab allocator (will be improved as I a get a feel for memory management on this device)
 - exception handler
+- i2c
 
 ### Planned features
 - double buffering (bank switching)
 - mmu
 - scrolling text (maybe idk)
 - read files from sd card
-- i2c
 - gpu driver
 - DOOM!
 
 ### Resources
 https://developer.arm.com/documentation/ddi0201/d
+
 
 https://www.3dbrew.org/wiki/Memory_layout
 

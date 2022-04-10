@@ -17,15 +17,14 @@ typedef _Bool bool;
 
 typedef char i8;
 typedef unsigned char u8;
+typedef volatile unsigned char vu8;
 
 typedef short i16;
 typedef unsigned short u16;
+typedef volatile unsigned short vu16;
 
 typedef int i32;
 typedef unsigned int u32;
 typedef volatile unsigned int vu32;
-
-typedef long i64;
-typedef unsigned long u64;
 
 #endif // TYPES_H
