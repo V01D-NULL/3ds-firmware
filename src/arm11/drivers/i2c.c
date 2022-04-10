@@ -1,9 +1,9 @@
 #include "i2c.h"
-#include <types.h>
 #include <arm11/core/mmio.h>
 #include <lib/print.h>
 
-#define CNT_OFFSET 1
+#define GET_CNT_REGISTER(i2c_base) (u8*)(i2c_base + CNT_REG_OFF)
+#define IS_BUSY(i2c_base) (*GET_CNT_REGISTER(i2c_base) & CNT_CHECK_AVAILABILITY)
 
 enum I2C_BASE
 {
@@ -14,19 +14,53 @@ enum I2C_BASE
 
 enum I2C_CNT
 {
-	CNT_STOP = (1 << 0),
-	CNT_START = (1 << 1),
-	CNT_PAUSE = (1 << 2),
-	CNT_ACK = (1 << 4),
-	CNT_DATA_DIR = (1 << 5),
-	CNT_INT_ENABLE = (1 << 6),
-	CNT_CHECK_START_OR_BUSY = (1 << 7)
+	CNT_STOP = (1 << 0),			  // 1 = Stop data transfer (last byte), 0 = no data transfer active
+	CNT_START = (1 << 1),			  // 1 = Start data transfer (first byte), 0 = no data transfer active
+	CNT_PAUSE = (1 << 2),			  // 1 = Pause after Error 0=Transfer Data
+	CNT_ACK = (1 << 4),				  // 1 = Acknowledged, 0 = Not acknowledged
+	CNT_READ = (1 << 5),			  // 1 = read, 0 = write
+	CNT_INT_ENABLE = (1 << 6),		  // 1 = enable interrupts, 0 = disable interrupts
+	CNT_CHECK_AVAILABILITY = (1 << 7) // 1 = busy serving another request, 0 = available
 };
 
-#define IS_BUSY(i2c_base) (mmio_read(i2c_base + CNT_OFFSET) & CNT_CHECK_START_OR_BUSY)
+enum I2C_REGISTER_OFFSETS
+{
+	DATA_REG_OFF,
+	CNT_REG_OFF,
+	CNTEX_REG_OFF,
+	SCL_REG_OFF = 4
+};
 
-// Wait for the busy bit to be cleared
-void i2c_wait(enum I2C_BASE i2c_base)
+// https://www.3dbrew.org/wiki/I2C_Registers#I2C_Devices
+struct
+{
+	u8 device_bus_id;
+	u16 device_register;
+} i2c_device_id_table_contents[15] = {
+	{0, 0x4A}, {0, 0x7A}, {0, 0x78},
+	{1, 0x4A}, {1, 0x78}, {1, 0x2C},
+	{1, 0x2E}, {1, 0x40}, {1, 0x44},
+	{2, 0xD6}, {2, 0xD0}, {2, 0xD2},
+	{2, 0xA4}, {2, 0x9A}, {2, 0xA0},
+};
+
+const inline typeof(i2c_device_id_table_contents[0]) i2c_get_device_id_table_pair(u8 device_id)
+{
+	return i2c_device_id_table_contents[device_id];
+}
+
+const inline u8 i2c_get_bus_id(u8 device_id)
+{
+	return i2c_get_device_id_table_pair(device_id).device_bus_id;
+}
+
+const inline u8 i2c_get_device_register(u8 device_id)
+{
+	return i2c_get_device_id_table_pair(device_id).device_register;
+}
+
+// Wait for any data transfers to complete
+inline void i2c_wait(enum I2C_BASE i2c_base)
 {
 	do
 	{
@@ -34,18 +68,94 @@ void i2c_wait(enum I2C_BASE i2c_base)
 	} while (IS_BUSY(i2c_base));
 }
 
-// https://www.3dbrew.org/wiki/I2C_Registers#I2C_SCL
-// https://www.3dbrew.org/wiki/I2C_Registers#I2C_CNTEX
-void i2c_init(void)
+// Write some data into the i2c's data register
+inline void i2c_write_data_reg(u32 i2c_base, u8 data)
 {
-	// Initialize I2C buses 1-3
-	i2c_wait(I2C1_BASE);
-	mmio_write16(I2C1_BASE, mmio_read(I2C1_BASE) | ((0b10100000000 << 8) | 0b00000010));
+	mmio_write8(i2c_base, data);
+}
 
-	i2c_wait(I2C2_BASE);
-	mmio_write16(I2C2_BASE, mmio_read(I2C2_BASE) | ((0b10100000000 << 8) | 0b00000010));
+// Write a byte into the i2c's CNT register
+inline void i2c_write_cnt_reg(u32 i2c_base, u8 mask)
+{
+	mmio_write8(i2c_base + CNT_REG_OFF, mask);
+}
 
-	i2c_wait(I2C3_BASE);
-	mmio_write16(I2C3_BASE, mmio_read(I2C3_BASE) | ((0b10100000000 << 8) | 0b00000010));
-	print("i2c: ok");
+// Returns true if a command has been ACK'ed, else false (NACK)
+inline bool i2c_was_acknowledged(enum I2C_BASE i2c_base)
+{
+	i2c_wait(i2c_base);
+	return (*GET_CNT_REGISTER(i2c_base) >> 4) & 1; // Bit 4: ACK
+}
+
+// Called when a NACK was received instead of an ACK.
+// The data transfer will be stopped
+static inline void i2c_nack(u32 i2c_base)
+{
+	i2c_write_cnt_reg(i2c_base, CNT_CHECK_AVAILABILITY | CNT_INT_ENABLE | CNT_PAUSE | CNT_STOP);
+	i2c_wait(i2c_base);
+}
+
+static bool try_get_device(u32 i2c_base, u8 device_register)
+{
+	i2c_wait(i2c_base);
+	i2c_write_data_reg(i2c_base, device_register);
+	i2c_write_cnt_reg(i2c_base, CNT_CHECK_AVAILABILITY | CNT_INT_ENABLE | CNT_START);
+
+	return i2c_was_acknowledged(i2c_base);
+}
+
+static bool try_get_register(u32 i2c_base, u8 reg)
+{
+	i2c_wait(i2c_base);
+	i2c_write_data_reg(i2c_base, reg);
+	i2c_write_cnt_reg(i2c_base, CNT_CHECK_AVAILABILITY | CNT_INT_ENABLE);
+
+	return i2c_was_acknowledged(i2c_base);
+}
+
+static u32 i2c_bus_id_to_addr(u8 bus_id)
+{
+	switch (bus_id)
+	{
+	case 2:
+		return I2C3_BASE;
+	case 1:
+		return I2C2_BASE;
+	case 0:
+		return I2C1_BASE;
+
+	default:
+		return 0;
+	}
+	__builtin_unreachable();
+}
+
+static inline bool i2c_initiate_transfer(u32 i2c_base, u8 device_register, u8 reg)
+{
+	return try_get_device(i2c_base, device_register) && try_get_register(i2c_base, reg);
+}
+
+bool i2c_write(u8 device_id, u8 reg, u8 data)
+{
+	u8 bus_id = i2c_get_bus_id(device_id);
+	u8 device_register = i2c_get_device_register(device_id);
+	u32 i2c_base = i2c_bus_id_to_addr(bus_id);
+	if (!i2c_base)
+		return false;
+
+	for (u8 i = 0; i < 8; i++)
+	{
+		if (i2c_initiate_transfer(i2c_base, device_register, reg))
+		{
+			i2c_wait(i2c_base);
+			i2c_write_data_reg(i2c_base, data);
+			i2c_write_cnt_reg(i2c_base, CNT_STOP | CNT_INT_ENABLE | CNT_CHECK_AVAILABILITY);
+
+			if (i2c_was_acknowledged(i2c_base))
+				return true;
+		}
+		i2c_nack(i2c_base);
+	}
+
+	return false;
 }
