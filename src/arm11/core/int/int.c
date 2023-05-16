@@ -4,12 +4,32 @@
 #define FAR_JUMP 0xE51FF004 // LDR PC, [PC, #-4]
 
 extern void asm_exception_stub(void);
+extern void fiq_handler();
+extern void data_abort_handler();
+extern void prefetch_abort_handler();
+extern void unknown_handler();
+extern void ud_handler();
+extern void irq_handler();
 
-u32 jump_table[6] = {[0 ... 5] = (u32)&asm_exception_stub};
+u32 jump_table[6] = {
+	(u32)&irq_handler,
+	(u32)&fiq_handler,
+	(u32)&ud_handler,
+	(u32)&ud_handler,
+	(u32)&prefetch_abort_handler,
+	(u32)&data_abort_handler};
 
-void a11_exception_main(void)
+const char *str_table[6] = {
+	"IRQ",
+	"FIQ",
+	"UD",
+	"???",
+	"Prefetch abort",
+	"Data abort"};
+
+void a11_exception_main(int arg0)
 {
-	print("ARM11: An exeption occurred.");
+	print("ARM11: An exception occurred (%s)", str_table[arg0]);
 	for (;;)
 		;
 }

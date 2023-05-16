@@ -1,29 +1,24 @@
 .extern a11_exception_main
 
-@ TODO: I might use this for more sophisticated exception handling as oppose to the jump_table array
-@
-@ fiq_handler:
-@ 	b asm_exception_stub
+.macro GEN_HANDLER label, id
+.globl \label
+\label:
+	mov r0, #\id
+	b asm_exception_stub
+.endm
 
-@ ud_handler:
-@ 	b asm_exception_stub
-
-@ prefetch_abort_handler:
-@ 	b asm_exception_stub
-
-@ data_abort_handler:
-@ 	b asm_exception_stub
-
-@ .globl a11_ivt
-@ a11_ivt:
-@ 	b ud_handler @ IRQ
-@ 	b fiq_handler @ FIQ
-@ 	b ud_handler @ UD
-@ 	b ud_handler @ ???
-@ 	b prefetch_abort_handler @ P-abort
-@ 	b data_abort_handler @ D-abort
+@ TODO: Due to the 3ds's firmware the regular IVT isn't present (and it doesn't start at address 0 either)
+@ Once paging is enabled a new IVT will be created and loaded.
+@ Once that is complete SVC will be available.
+GEN_HANDLER fiq_handler, 0
+GEN_HANDLER irq_handler, 1
+GEN_HANDLER ud_handler, 2
+GEN_HANDLER unknown_handler, 3
+GEN_HANDLER prefetch_abort_handler, 4
+GEN_HANDLER data_abort_handler, 5
 
 .globl asm_exception_stub
 asm_exception_stub:
 	ldr sp, =0x1FFFE000 @ TODO: Is this stack placement okay?
+	push {r0}
 	bl a11_exception_main

@@ -11,9 +11,7 @@ void main(void)
 	slab_init();
 	print("Booted on a %s", cfg11_get_console_name());
 
-	print("writing to i2c...");
-	bool status = i2c_write(3, 0x20, 1 << 0); // shutdown
-	print("i2c write returned: %d", status);
+	i2c_write(3, 0x20, 1 << 0); // shutdown
 
 	for (;;)
 		;
