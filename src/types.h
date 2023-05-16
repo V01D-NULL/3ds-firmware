@@ -1,17 +1,8 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-// Some external libs include stddef.h
-#ifndef NULL
-#define NULL ((void *)0)
-#endif
-
-#ifndef bool
-typedef _Bool bool;
-#endif
-
-#define true 1
-#define false 0
+#include <stddef.h>
+#include <stdbool.h>
 
 #define auto __auto_type
 
