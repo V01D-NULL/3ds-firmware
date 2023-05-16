@@ -3,10 +3,12 @@
 #include <core/mm/slab.h>
 #include <drivers/i2c.h>
 #include <lib/print.h>
+#include <core/fb.h>
 #include <types.h>
 
 void main(void)
 {
+	fb_clear();
 	ivt_init();
 	slab_init();
 	print("Booted on a %s", cfg11_get_console_name());

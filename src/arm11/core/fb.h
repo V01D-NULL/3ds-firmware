@@ -3,10 +3,11 @@
 
 #include <types.h>
 
-#define FB_TOP_WIDTH     400
-#define FB_BOTTOM_WIDTH  320
-#define FB_HEIGHT        240 // Both displays have the same height
+#define FB_TOP_WIDTH 400
+#define FB_BOTTOM_WIDTH 320
+#define FB_HEIGHT 240 // Both displays have the same height
 
+void fb_clear(void);
 void putc(bool isTopScreen, u32 posX, u32 posY, u32 color, char c);
 void deinit_displays(void);
 

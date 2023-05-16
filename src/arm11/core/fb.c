@@ -18,9 +18,9 @@
 static inline void pixel(u8 *fb, u32 hex, u32 x, u32 y)
 {
 	fb += CORRECT_XY(x, y);
-	*fb++ = 0xFF;
-	*fb++ = 0xFF;
-	*fb++ = 0xFF;
+	*fb++ = hex & 0xff;
+	*fb++ = (hex >> 8) & 0xff;
+	*fb++ = (hex >> 16) & 0xff;
 }
 
 void putc(bool isTopScreen, u32 posX, u32 posY, u32 color, char c)
@@ -35,6 +35,18 @@ void putc(bool isTopScreen, u32 posX, u32 posY, u32 color, char c)
 			bool can_draw = selection & (1 << (7 - x));
 			if (can_draw)
 				pixel(top_display_fb, 0xFFFFFF, posX + x, posY + y);
+		}
+	}
+}
+
+void fb_clear(void)
+{
+	u8 *top_display_fb = (u8 *)0x18300000;
+	for (int y = 0; y <= FB_HEIGHT; y++)
+	{
+		for (int x = 0; x <= FB_TOP_WIDTH; x++)
+		{
+			pixel(top_display_fb, 0u, x, y);
 		}
 	}
 }
