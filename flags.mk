@@ -2,7 +2,7 @@ CC = /usr/bin/clang
 AS = /usr/bin/arm-none-eabi-as
 LD = /usr/bin/ld.lld
 PY = /usr/bin/python3
-GCC_LIB_PATH = /usr/lib/gcc/arm-none-eabi/9.2.1/
+GCC_LIB_PATH = /usr/lib/gcc/arm-none-eabi/10.3.1/
 
 # Overriden by whoever includes flags.mk
 BUILDDIR =

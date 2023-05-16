@@ -1,6 +1,6 @@
 -include flags.mk
 
-SD_MOUNTPOINT = /media/tim/3437-36312/luma/payloads/
+SD_MOUNTPOINT = /media/tim/NO\ NAME/luma/payloads/
 
 # boot.firm is what boot9strap loads after doing it's thing, the name must not be changed (unless it's chainloaded by luma)
 all: boot.firm
