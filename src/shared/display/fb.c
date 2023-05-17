@@ -1,6 +1,6 @@
-#include <core/fb.h>
-#include <core/mmio.h>
-#include <font.h>
+#include "fb.h"
+#include "font.h"
+#include <shared/mm/mmio.h>
 /*
 	References:
 	 - https://www.3dbrew.org/wiki/GPU/FR

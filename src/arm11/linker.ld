@@ -18,11 +18,13 @@ MEMORY
 
 SECTIONS
 {
-    PROVIDE(__start__           = 0x1FF80000);
+	PROVIDE(__a11_core_messaging__ = 0x1FF80000);
+    PROVIDE(__start__           = 0x1FF80040);
     PROVIDE(__stack_top__       = 0x1FFFE000);
     PROVIDE(__stack_bottom__    = 0x1FFFD000);
 
     . = __start__;
+
     .text :
     {
         /* .text */

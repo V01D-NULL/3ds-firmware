@@ -1,8 +1,8 @@
 #ifndef MMIO_H
 #define MMIO_H
 
-#include <clang.h>
-#include <types.h>
+#include <shared/clang.h>
+#include <shared/types.h>
 
 STATIC_INLINE
 void mmio_write8(u32 io_port, u8 val)

@@ -1,5 +1,5 @@
-#include <types.h>
-#include <arm11/core/mmio.h>
+#include <shared/types.h>
+#include <shared/mm/mmio.h>
 
 #define CFG11_SOCINFO 0x10140FFC
 
@@ -8,17 +8,17 @@ const char *cfg11_get_console_name(void)
 {
 	switch (mmio_read(CFG11_SOCINFO))
 	{
-		case 7:
-			return "Retail N3DS";
-		
-		case 3:
-			return "Prototype N3DS";
-		
-		case 1:
-			return "O3DS";
+	case 7:
+		return "Retail N3DS";
 
-		default:
-			return "???";
+	case 3:
+		return "Prototype N3DS";
+
+	case 1:
+		return "O3DS";
+
+	default:
+		return "???";
 	}
 
 	__builtin_unreachable();

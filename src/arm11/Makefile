@@ -1,9 +1,9 @@
 -include ../../flags.mk
 
 BUILDDIR += ../../build
-INCLUDES += -I./ -I../
+INCLUDES += -I./ -I../ -I../shared/
 
-CSOURCES = $(shell find ./ -name '*.c' -type f)
+CSOURCES = $(shell find ./ -name '*.c' -type f) $(shell find ../shared/ -name '*.c' -type f)
 ASSOURCES = $(shell find ./ -name '*.S' -type f)
 
 COBJECTS = $(CSOURCES:.c=.c.o)

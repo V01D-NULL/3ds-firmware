@@ -1,7 +1,7 @@
 #ifndef N3DS_FRAMEBUFFER_H
 #define N3DS_FRAMEBUFFER_H
 
-#include <types.h>
+#include <shared/types.h>
 
 #define FB_TOP_WIDTH 400
 #define FB_BOTTOM_WIDTH 320

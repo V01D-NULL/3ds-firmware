@@ -1,7 +1,7 @@
-#include <lib/print.h>
-#include <lib/libcore/fmt.h>
-#include <lib/libcore/string.h>
-#include <core/fb.h>
+#include "print.h"
+#include "libcore/fmt.h"
+#include "libcore/string.h"
+#include <shared/display/fb.h>
 
 static int x = 1;
 static int y = 1;
@@ -13,7 +13,7 @@ void print(const char *format, ...)
 	va_start(ap, format);
 	int len = vsnprintf((char *)&buff, 512, format, ap);
 	va_end(ap);
-	
+
 	for (u32 i = 0; i < len; i++, x += 8)
 	{
 		putc(true, x, y, 0, buff[i]);

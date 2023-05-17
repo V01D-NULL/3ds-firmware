@@ -1,8 +1,8 @@
 #ifndef STRING_H
 #define STRING_H
 
-#include <clang.h>
-#include <types.h>
+#include <shared/clang.h>
+#include <shared/types.h>
 
 STATIC_INLINE
 u32 strlen(const char *s)

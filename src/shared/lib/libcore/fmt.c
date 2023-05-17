@@ -39,7 +39,6 @@ char *strrev(char *src)
 	return src;
 }
 
-#include <core/fb.h>
 void itoa(int num, char *str, int base, bool upper)
 {
 	int buffer_sz = 20;

@@ -10,8 +10,8 @@ INCLUDES =
 
 # Kernel & cpu specific compiler flags
 KERN_CFLAGS   = $(INCLUDES) -ffreestanding -g -O2 -c -D VERBOSE
-ARM9_CFLAGS   = $(KERN_CFLAGS) --target=armv5-none-eabi -mcpu=arm946e-s
+ARM9_CFLAGS   = $(KERN_CFLAGS) --target=armv5-none-eabi -mcpu=arm946e-s -D ARM9_CORE
 ARM9_ASFLAGS  = -g -march=armv5  -mcpu=arm946e-s
 
-ARM11_CFLAGS  = $(KERN_CFLAGS) --target=armv6k-none-eabi -mtune=mpcore -mfloat-abi=hard -mtp=soft
+ARM11_CFLAGS  = $(KERN_CFLAGS) --target=armv6k-none-eabi -mtune=mpcore -mfloat-abi=hard -mtp=soft -D ARM11_CORE
 ARM11_ASFLAGS = -g -march=armv6k -mfloat-abi=hard

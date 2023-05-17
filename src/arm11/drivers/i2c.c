@@ -1,8 +1,8 @@
 #include "i2c.h"
-#include <arm11/core/mmio.h>
-#include <lib/print.h>
+#include <shared/mm/mmio.h>
+#include <shared/lib/print.h>
 
-#define GET_CNT_REGISTER(i2c_base) (u8*)(i2c_base + CNT_REG_OFF)
+#define GET_CNT_REGISTER(i2c_base) (u8 *)(i2c_base + CNT_REG_OFF)
 #define IS_BUSY(i2c_base) (*GET_CNT_REGISTER(i2c_base) & CNT_CHECK_AVAILABILITY)
 
 enum I2C_BASE
@@ -37,11 +37,21 @@ struct
 	u8 device_bus_id;
 	u16 device_register;
 } i2c_device_id_table_contents[15] = {
-	{0, 0x4A}, {0, 0x7A}, {0, 0x78},
-	{1, 0x4A}, {1, 0x78}, {1, 0x2C},
-	{1, 0x2E}, {1, 0x40}, {1, 0x44},
-	{2, 0xD6}, {2, 0xD0}, {2, 0xD2},
-	{2, 0xA4}, {2, 0x9A}, {2, 0xA0},
+	{0, 0x4A},
+	{0, 0x7A},
+	{0, 0x78},
+	{1, 0x4A},
+	{1, 0x78},
+	{1, 0x2C},
+	{1, 0x2E},
+	{1, 0x40},
+	{1, 0x44},
+	{2, 0xD6},
+	{2, 0xD0},
+	{2, 0xD2},
+	{2, 0xA4},
+	{2, 0x9A},
+	{2, 0xA0},
 };
 
 const inline typeof(i2c_device_id_table_contents[0]) i2c_get_device_id_table_pair(u8 device_id)
